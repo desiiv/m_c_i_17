@@ -8,8 +8,7 @@
     <h1 id="instr" style="color: brown">Press ENTER to start Experiment</h1>
     <h2 style="color: chocolate">To end experiment press ENTER.</h2>
     <div>
-        <img id="img1" src="pics/10.png" alt="X" style="visibility: hidden;width:200px;height:200px">
-        <img id="img2" src="pics/9.jpg" alt="O" style="visibility: hidden;width:200px;height:200px">
+        <img id="img1" src="http://www.swiftretail.com/moveDown.png"  style="visibility: hidden;width:200px;height:200px">
     </div>
     <div>
         <p id="time"></p>
@@ -35,7 +34,7 @@
         document.getElementById("sd").innerHTML = "";
         document.getElementById("err").innerHTML="";
         document.getElementById("median").innerHTML="";
-        document.getElementById("instr").innerHTML="Press SPACE when you see a 'X', do not do anything when you see a 'O'";
+        document.getElementById("instr").innerHTML="Only press SPACE when you see a square!!!";
         startTest();
     }
 
@@ -48,7 +47,7 @@
     function startTest() {
         testActiv=true;
         noReaction=true;
-        document.getElementById("img2").style.visibility="hidden";
+        document.getElementById("img1").style.visibility="hidden";
         var timeInSec = Math.random()*3+1;
         window.setTimeout("showStimuli()",timeInSec*1000);
 
@@ -58,11 +57,18 @@
         if (testActiv){
             lastTimeStimuliShown = new Date().getTime();
             var choice = getRandomInt(1,3);
+            var sizeImg = getRandomInt(150,350);
             if(choice<2){
                 trueReaction=true;
+                document.getElementById("img1").style.width=sizeImg+"px";
+                document.getElementById("img1").style.height = sizeImg +"px";
                 document.getElementById("img1").style.visibility="visible";
+                document.getElementById("img1").src ="http://images.maplinmedia.co.uk/coloured-gel-sheet-48inch-x-21inch-colour-light-blue-118.jpg?w=283&h=283&r=4&o=AYkIEZ8q@WNwylABWsSa4nru4EEj&V=arYZ";
             }else {
-                document.getElementById("img2").style.visibility="visible";
+                document.getElementById("img1").style.width=sizeImg+"px";
+                document.getElementById("img1").style.height = sizeImg +"px";
+                document.getElementById("img1").style.visibility="visible";
+                document.getElementById("img1").src ="http://cdnl.accucutcraft.com/media/catalog/product/cache/2/image/9df78eab33525d08d6e5fb8d27136e95/C/R/CR210.jpg";
                 noReaction=true;
                 window.setTimeout("noReactionFunk()", 2500);
 
@@ -86,13 +92,16 @@
                 times.push(deltaTime);
                 document.getElementById("time").innerHTML="Time:"+deltaTime;
                 document.getElementById("img1").style.visibility="hidden";
+                document.getElementById("img1").src ="";
+
                 trueReaction = false;
             }else {
                 if(!noReaction){
                     err++;
                 }
 
-                document.getElementById("img2").style.visibility="hidden";
+                document.getElementById("img1").style.visibility="hidden";
+                document.getElementById("img1").src ="";
 
             }
         noReaction = true;
@@ -103,7 +112,7 @@
 
     function endExperiment() {
         document.getElementById("img1").style.visibility="hidden";
-        document.getElementById("img2").style.visibility="hidden";
+        document.getElementById("img1").style.visibility="hidden";
         experimentActive = false;
         testActiv=false;
         trueReaction = false;
