@@ -8,7 +8,7 @@
     <h1 id="instr" style="color: brown">Press ENTER to start Experiment</h1>
     <h2 style="color: chocolate">To end experiment press ENTER.</h2>
     <div>
-        <img id="img1" src="http://www.swiftretail.com/moveDown.png"  style="visibility: hidden;width:200px;height:200px">
+        <img id="img1" src=""  style="visibility: hidden;width:200px;height:200px">
     </div>
     <div>
         <p id="time"></p>
@@ -58,13 +58,13 @@
             lastTimeStimuliShown = new Date().getTime();
             var choice = getRandomInt(1,3);
             var sizeImg = getRandomInt(150,350);
-            if(choice<2){
+            if(choice===1){
                 trueReaction=true;
                 document.getElementById("img1").style.width=sizeImg+"px";
                 document.getElementById("img1").style.height = sizeImg +"px";
                 document.getElementById("img1").style.visibility="visible";
                 document.getElementById("img1").src ="http://images.maplinmedia.co.uk/coloured-gel-sheet-48inch-x-21inch-colour-light-blue-118.jpg?w=283&h=283&r=4&o=AYkIEZ8q@WNwylABWsSa4nru4EEj&V=arYZ";
-            }else {
+            }else if(choice===2) {
                 document.getElementById("img1").style.width=sizeImg+"px";
                 document.getElementById("img1").style.height = sizeImg +"px";
                 document.getElementById("img1").style.visibility="visible";
