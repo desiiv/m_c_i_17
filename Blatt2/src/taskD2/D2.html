@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>D2</title>
+</head>
+<body>
+    <h1 id="instr" style="color: brown">Press ENTER to start Experiment</h1>
+    <h2 style="color: chocolate">To end experiment press ENTER.</h2>
+    <div>
+        <img id="img1" src="pics/10.png" alt="X" style="visibility: hidden;width:200px;height:200px">
+        <img id="img2" src="pics/9.jpg" alt="O" style="visibility: hidden;width:200px;height:200px">
+    </div>
+    <div>
+        <p id="time"></p>
+        <p id="mean"></p>
+        <p id="sd"></p>
+        <p id="err"></p>
+        <p id="median"></p>
+    </div>
+</body>
+<script type="text/javascript">
+    var times = new Array();
+    var testActiv = false;
+    var trueReaction = false;
+    var lastTimeStimuliShown;
+    var experimentActive = false;
+    var err=0;
+    var noReaction = true;
+
+    function startExperiment() {
+        experimentActive=true;
+        document.getElementById("time").innerHTML = "";
+        document.getElementById("mean").innerHTML = "";
+        document.getElementById("sd").innerHTML = "";
+        document.getElementById("err").innerHTML="";
+        document.getElementById("median").innerHTML="";
+        document.getElementById("instr").innerHTML="Press SPACE when you see a 'X', do not do anything when you see a 'O'";
+        startTest();
+    }
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function startTest() {
+        testActiv=true;
+        noReaction=true;
+        document.getElementById("img2").style.visibility="hidden";
+        var timeInSec = Math.random()*3+1;
+        window.setTimeout("showStimuli()",timeInSec*1000);
+
+    }
+
+    function showStimuli() {
+        if (testActiv){
+            lastTimeStimuliShown = new Date().getTime();
+            var choice = getRandomInt(1,3);
+            if(choice<2){
+                trueReaction=true;
+                document.getElementById("img1").style.visibility="visible";
+            }else {
+                document.getElementById("img2").style.visibility="visible";
+                noReaction=true;
+                window.setTimeout("noReactionFunk()", 2500);
+
+            }
+        }
+
+    }
+
+    function noReactionFunk() {
+        if(noReaction){
+            stopTest();
+        }
+    }
+
+    function stopTest() {
+        testActiv=false;
+
+            if(trueReaction){
+                var currentTime = new Date().getTime();
+                var deltaTime = currentTime - lastTimeStimuliShown;
+                times.push(deltaTime);
+                document.getElementById("time").innerHTML="Time:"+deltaTime;
+                document.getElementById("img1").style.visibility="hidden";
+                trueReaction = false;
+            }else {
+                if(!noReaction){
+                    err++;
+                }
+
+                document.getElementById("img2").style.visibility="hidden";
+
+            }
+        noReaction = true;
+
+            startTest();
+
+    }
+
+    function endExperiment() {
+        document.getElementById("img1").style.visibility="hidden";
+        document.getElementById("img2").style.visibility="hidden";
+        experimentActive = false;
+        testActiv=false;
+        trueReaction = false;
+        var meanDeltaTime = 0.0;
+        for (var i = 0; i < times.length; ++i) {
+            meanDeltaTime += times[i]; }
+        meanDeltaTime = Math.round(meanDeltaTime / times.length);
+        var standardDerivation = 0.0;
+        for (var i = 0; i < times.length; ++i) {var diff = (times[i] - meanDeltaTime);
+            standardDerivation += diff * diff; }
+        standardDerivation = Math.round(Math.sqrt(standardDerivation /
+            times.length));
+        var median=0;
+        if(times.length!=0){
+            if(times.length%2!=0){
+
+                median = times[times.length/2-0.5];
+
+            }else {
+
+                median = (times[times.length/2]+times[times.length/2-1])/2;
+            }
+        }
+        document.getElementById("median").innerHTML="Median: "+median;
+        document.getElementById("mean").innerHTML = "Mean: " + meanDeltaTime +
+            "ms";
+        document.getElementById("sd").innerHTML = "SD: " + standardDerivation +
+            "ms";
+        document.getElementById("err").innerHTML="Error rate:" + err;
+        document.getElementById("instr").innerHTML = "Press ENTER to start!";
+        times = [];
+
+    }
+
+    document.onkeypress = onKey;
+    function onKey(e) {
+        if(e==null){
+            e = window.event;
+        }
+
+        switch (e.which||e.charCode||e.keyCode){
+            case 13:
+                noReaction = false;
+                if(!experimentActive){
+                    startExperiment();
+                }else {
+                    endExperiment();
+                }
+                break;
+            case 32:
+                if(experimentActive){
+                    if(testActiv){
+                        noReaction =false;
+                        stopTest();
+
+                    }
+                }
+                break;
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Task D4</title>
+</head>
+<body bgcolor="#ffe4c4">
+<h1 id="instr" style="text-align: center;color: darkred">Test you knowledge in geography! </h1>
+
+<div style="text-align: center">
+    <button id="start" style="border-color: brown;background-color: brown; align-items: center" ><h1 style="color:antiquewhite" onclick="startExperiment()">Start quiz!</h1></button>
+</div>
+
+<div>
+    <h1 id="q1" style="visibility: hidden;text-align: center; border: solid; border-color: darkred;color: crimson"><b></b></h1>
+</div>
+<div style="text-align: center">
+    <button id="city" style="visibility: hidden;border-color: brown;background-color: brown;width: 100px" onclick="city()"><h2 style="color:antiquewhite">  city  </h2></button>
+    <button id="country" style="visibility: hidden;border-color: brown;background-color: brown;width: 100px" onclick="country()"><h2 style="color:antiquewhite">country</h2></button>
+</div>
+<div><p></p></div>
+
+<div style="text-align: center;height: 40px">
+    <button id="end" style="visibility:hidden;border-color: brown;background-color: brown; align-items: center" onclick="end()" ><h2 style="color:antiquewhite" onclick="startExperiment()">See your results!</h2></button>
+</div>
+
+<div>
+    <h3 id="points" style="text-align: center;color: darkred"></h3>
+    <h3 id="mean" style="text-align: center;color: darkred"></h3>
+    <h3 id="err" style="text-align: center;color: darkred"></h3>
+</div>
+<div align="middle">
+    <img id="img1" src="http://q.likesuccess.com/110/5483077-seal-of-approval-good-job.jpg" alt="good job!" style="visibility: hidden" >
+</div>
+</body>
+<script type="text/javascript">
+    var answer;
+    var lastTimeStimuliShown;
+    var experimentActive = false;
+    var err=0;
+    var times = new Array();
+    var testActiv = false;
+    var citys = new Array();
+    var countries = new Array();
+
+
+
+    function startExperiment() {
+        experimentActive=true;
+        document.getElementById("mean").innerHTML = "";
+        document.getElementById("points").innerHTML = "";
+        document.getElementById("err").innerHTML="";
+        document.getElementById("end").style.visibility="visible";
+        document.getElementById("start").style.visibility="hidden";
+        document.getElementById("city").style.visibility="visible";
+        document.getElementById("country").style.visibility="visible";
+        document.getElementById("img1").style.visibility="hidden";
+        document.getElementById("instr").innerHTML="For every right answer you get 10 points! For every wrong one you loose 5! ";
+        fillOptions();
+        startTest();
+    }
+
+    function fillOptions() {
+        citys =["Sofia","Berlin","London", "Stockholm", "Santa Barbara" ,"Solvang", "Plovdiv", "Hamburg","Edinburgh" , "Tokyo"];
+        countries=["Cuba", "Mexico","Greece ","Canada", "Korea", "Sweden", "Puerto Rico", "Columbia","Panama","Peru"];
+    }
+
+    function startTest() {
+        testActiv = true;
+        var timeSec = Math.random()*4+2;
+        window.setTimeout("showStimuli()",timeSec*1000);
+
+    }
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function showStimuli() {
+if (testActiv){
+    var choice  = getRandomInt(1,4);
+    var a = getRandomInt(0,10);
+    var x = document.getElementById("q1");
+    if(choice<2){
+        answer = true;
+        x.innerHTML= countries[a].toString();
+    }else {
+        answer = false;
+        x.innerHTML = citys[a].toString();
+    }
+    x.style.visibility = "visible";
+    lastTimeStimuliShown = new Date().getTime();
+}
+    }
+
+    function stopTest() {
+        testActive=false;
+        if(experimentActive){
+            var currentTime = new Date().getTime();
+            var deltaTime = currentTime - lastTimeStimuliShown;
+            times.push(deltaTime);
+            document.getElementById("q1").style.visibility = "hidden";
+            startTest();
+        }
+
+    }
+
+    function endExperiment() {
+        document.getElementById("q1").style.visibility = "hidden";
+        testActiv=false;
+        experimentActive = false;
+        var meanDeltaTime = 0.0;
+        for (var i = 0; i < times.length; ++i) {
+            meanDeltaTime += times[i]; }
+        meanDeltaTime = Math.round(meanDeltaTime / times.length);
+        var points =times.length*10-err*15;
+        if(points>0){
+            document.getElementById("points").innerHTML="Awesome you got " +points +" points!"
+        }else {
+            document.getElementById("points").innerHTML="Sadly you have got " + points+ " points ;("
+        }
+
+       if(times.length!==0){
+            document.getElementById("mean").innerHTML = "On average you need " + meanDeltaTime +" ms per Answer!";
+        }
+
+
+        if (err>0||times.length===0){
+            document.getElementById("err").innerHTML="You got " + err+" answers wrong!";
+        }else if(err===0) {
+            document.getElementById("err").innerHTML = "WOW!!! You are a geography master, you got everything right!"
+        }
+
+        if (points>=60&&err===0){
+            document.getElementById("img1").style.visibility="visible";
+        }
+
+        document.getElementById("instr").innerHTML = "Test you knowledge in geography!";
+        document.getElementById("city").style.visibility="hidden";
+        document.getElementById("country").style.visibility="hidden";
+        document.getElementById("start").style.visibility="visible";
+        times = [];
+        document.getElementById("end").style.visibility="hidden";
+        err=0;
+    }
+
+    function city() {
+        if(experimentActive){
+            if (testActiv){
+                if(answer){
+                    err++;
+                }
+                stopTest();
+            }
+        }
+    }
+
+    function country() {
+        if(experimentActive){
+            if(testActiv){
+                if(!answer){
+                    err++;
+                }
+                stopTest();
+            }
+        }
+    }
+
+    function end() {
+        endExperiment();
+    }
+
+
+</script>
+
+</html>

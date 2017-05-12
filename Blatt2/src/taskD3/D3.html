@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Task D3</title>
+</head>
+<body>
+<h1 id="instr">To start press ENTER</h1>
+<h2 id="end" style="visibility: hidden">To end experiment press ENTER</h2>
+<div>
+    <h3 id="q1" style="visibility: hidden"><b></b></h3>
+</div>
+<div>
+    <p id="mean"></p>
+    <p id="sd"></p>
+    <p id="err"></p>
+    <p id="median"></p>
+</div>
+</body>
+<script type="text/javascript">
+    var answer;
+    var lastTimeStimuliShown;
+    var experimentActive = false;
+    var err=0;
+    var times = new Array();
+    var testActiv = false;
+    var citys = new Array();
+    var countries = new Array();
+
+
+    function startExperiment() {
+        experimentActive=true;
+        document.getElementById("mean").innerHTML = "";
+        document.getElementById("sd").innerHTML = "";
+        document.getElementById("err").innerHTML="";
+        document.getElementById("median").innerHTML="";
+        document.getElementById("end").style.visibility="visible";
+        document.getElementById("instr").innerHTML="If the word you see is a country press 't', if it is a city press 'f'! "
+        fillOptions();
+        startTest();
+    }
+
+    function fillOptions() {
+        citys.push("Sofia");
+        citys.push("Berlin");
+        citys.push("London");
+        citys.push("Stockholm");
+        citys.push("Santa Barbara");
+        citys.push("Solvang");
+        countries.push("Cuba");
+        countries.push("Monaco");
+        countries.push("Mexico");
+        countries.push("Kanada");
+        countries.push("Greece");
+        countries.push("Korea");
+    }
+
+    function startTest() {
+        testActiv = true;
+        var x = document.getElementById("q1");
+        var timeSec = Math.random()*4+2;
+        window.setTimeout("showStimuli()",timeSec*1000);
+
+    }
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function showStimuli() {
+        if (testActiv){
+            var choice  = getRandomInt(1,7);
+            var a = getRandomInt(0,6);
+            var x = document.getElementById("q1");
+            if(choice<4){
+                answer = true;
+                x.innerHTML= countries[a].toString();
+            }else {
+                answer = false;
+                x.innerHTML = citys[a].toString();
+            }
+            x.style.visibility = "visible";
+            lastTimeStimuliShown = new Date().getTime();
+        }
+    }
+
+    function stopTest() {
+        testActive=false;
+        var currentTime = new Date().getTime();
+        var deltaTime = currentTime - lastTimeStimuliShown;
+        times.push(deltaTime);
+        document.getElementById("q1").style.visibility = "hidden";
+        document.getElementById("q1").innerHTML="";
+            startTest();
+
+
+    }
+
+    function endExperiment() {
+        window.setTimeout("showStimuli()",0);
+        document.getElementById("q1").style.visibility = "hidden";
+        testActiv=false;
+        experimentActive = false;
+        var meanDeltaTime = 0.0;
+        for (var i = 0; i < times.length; ++i) {
+            meanDeltaTime += times[i]; }
+        meanDeltaTime = Math.round(meanDeltaTime / times.length);
+        var standardDerivation = 0.0;
+        for (var i = 0; i < times.length; ++i) {var diff = (times[i] - meanDeltaTime);
+            standardDerivation += diff * diff; }
+        standardDerivation = Math.round(Math.sqrt(standardDerivation /
+            times.length));
+        var median=0;
+        if(times.length!=0){
+            if(times.length%2!=0){
+
+                median = times[times.length/2-0.5];
+
+            }else {
+
+                median = (times[times.length/2]+times[times.length/2-1])/2;
+            }
+        }
+        document.getElementById("median").innerHTML="Median: "+median;
+        document.getElementById("mean").innerHTML = "Mean: " + meanDeltaTime +
+            "ms";
+        document.getElementById("sd").innerHTML = "SD: " + standardDerivation +
+            "ms";
+        document.getElementById("err").innerHTML="Error rate:" + err;
+        document.getElementById("instr").innerHTML = "Press ENTER to start!";
+        times = [];
+        document.getElementById("end").style.visibility="hidden";
+        err=0;
+    }
+
+    document.onkeydown = onKey;
+
+    function onKey(e) {
+        if(e===null){
+            e = window.event;
+        }
+
+        switch (e.which||e.charCode||e.keyCode){
+            case 13:
+            if(!experimentActive){
+                startExperiment();
+            }else {
+                endExperiment();
+            }
+            break;
+
+            case 84:
+                if(experimentActive){
+                    if(testActiv){
+                        if(!answer){
+                            err++;
+                        }
+                        stopTest();
+                    }
+                }
+                //t
+
+                break;
+
+            case 70:
+                //f
+                if(experimentActive){
+                    if (testActiv){
+                        if(answer){
+                            err++;
+                        }
+                        stopTest();
+                    }
+                }
+                break;
+        }
+
+    }
+</script>
+</html>

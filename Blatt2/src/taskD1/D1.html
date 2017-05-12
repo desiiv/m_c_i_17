@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Reaction Time Experiment</title>
+</head>
+<body>
+<h1 id="instr" style="color: coral"><b>Press SPACE to start the experiment!</b></h1>
+    <div>
+        <img id="img" src="pics/1" alt="pic" style="visibility: hidden;width:400px;height:200px" >
+    </div>
+    <div>
+        <p id="time"></p>
+        <p id="count"></p>
+        <p id="meanA"></p>
+        <p id="sdA"></p>
+        <p id="medianA"></p>
+        <p id="meanV"></p>
+        <p id="sdV"></p>
+        <p id="medianV"></p>
+        <p id="err"></p>
+    </div>
+</body>
+<script type="text/javascript">
+    var experimentActive=false;
+    var testActive=false;
+    var timesAudio = new Array();
+    var timesVisual = new Array();
+    var error=0;
+    var lastTimeStimuliChanged;
+    var stimuliShown=0;
+    var audio;
+    var last=0;
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function visualStimulus() {
+        testActive=true;
+        var pic = document.getElementById("img");
+        pic.src="pics/" + getRandomInt(1,8)+".jpg";
+        pic.style.visibility="visible";
+        lastTimeStimuliChanged= new Date().getTime();
+        stimuliShown++;
+        last=1;
+    }
+
+    function soundStimulus(){
+        testActive = true;
+        var as = "audio/"+ getRandomInt(1,6)+".mp3";
+        audio = new Audio(as);
+        audio.play();
+        lastTimeStimuliChanged= new Date().getTime();
+        stimuliShown++;
+        last=0;
+    }
+
+    function startTest() {
+        var timeInSec = Math.random()*6+2;
+        if(last===0){
+            window.setTimeout("visualStimulus()",timeInSec*1000);
+        }else {
+            window.setTimeout("soundStimulus()",timeInSec*1000);
+        }
+        
+    }
+
+    function startExperiment() {
+        experimentActive=true;
+        document.getElementById("time").innerHTML = "";
+        document.getElementById("count").innerHTML = "";
+        document.getElementById("meanA").innerHTML = "";
+        document.getElementById("sdA").innerHTML = "";
+        document.getElementById("meanV").innerHTML = "";
+        document.getElementById("sdV").innerHTML = "";
+        document.getElementById("err").innerHTML="";
+        document.getElementById("medianA").innerHTML="";
+        document.getElementById("medianV").innerHTML="";
+        document.getElementById("instr").innerHTML="Press space when you see the picture or you hear a sound!"
+        startTest();
+
+    }
+    
+    function stopTest() {
+        testActive=false;
+        var currentTime = new Date().getTime();
+        var deltaTime = currentTime - lastTimeStimuliChanged;
+        document.getElementById("time").innerHTML="Time:"+deltaTime;
+        if(last==0){
+            audio.pause();
+            timesAudio.push(deltaTime);
+        }else {
+            var x = document.getElementById("img");
+            x.style.visibility="hidden";
+            timesVisual.push(deltaTime);
+        }
+
+        if (stimuliShown<8){
+            startTest();
+        }else{
+            stopExperiment();
+        }
+
+    }
+
+    function stopExperiment() {
+        testActive=false;
+        experimentActive = false;
+        var meanDeltaTimeVisual = 0.0;
+        for (var i = 0; i < timesVisual.length; ++i) {
+            meanDeltaTimeVisual += timesVisual[i]; }
+        meanDeltaTimeVisual = Math.round(meanDeltaTimeVisual / timesVisual.length);
+        var standardDerivationVisual = 0.0;
+        for (var i = 0; i < timesVisual.length; ++i) {var diff = (timesVisual[i] - meanDeltaTimeVisual);
+            standardDerivationVisual += diff * diff; }
+        standardDerivationVisual = Math.round(Math.sqrt(standardDerivationVisual /
+            timesVisual.length));
+
+        var meanDeltaTimeAudio = 0.0;
+        for (var i = 0; i < timesAudio.length; ++i) {
+            meanDeltaTimeAudio += timesAudio[i]; }
+        meanDeltaTimeAudio = Math.round(meanDeltaTimeAudio / timesAudio.length);
+        var standardDerivationAudio = 0.0;
+        for (var i = 0; i < timesAudio.length; ++i) {var diff = (timesAudio[i] - meanDeltaTimeAudio);
+            standardDerivationAudio += diff * diff; }
+        standardDerivationAudio = Math.round(Math.sqrt(standardDerivationAudio /
+            timesAudio.length));
+        var medianAudio = (timesAudio[1]+timesAudio[2])/2;
+        var medianVideo = (timesVisual[1]+timesVisual[2])/2;
+        document.getElementById("count").innerHTML = "Count: " + timesVisual.length+timesAudio.length;
+        document.getElementById("meanV").innerHTML = "VisualMean: " + meanDeltaTimeVisual +
+            "ms";
+        document.getElementById("meanA").innerHTML = "AudioMean: " + meanDeltaTimeAudio +
+            "ms";
+        document.getElementById("medianV").innerHTML = "VisualMedian: "+ medianVideo;
+        document.getElementById("medianA").innerHTML = "AudioMedian: "+ medianAudio;
+        document.getElementById("sdV").innerHTML = "VisualSD: " + standardDerivationVisual +
+            "ms";
+        document.getElementById("sdA").innerHTML = "AudioSD: " + standardDerivationAudio +
+            "ms";
+        document.getElementById("err").innerHTML="Error rate:" + error;
+        document.getElementById("instr").innerHTML = "Press SPACE to start!";
+        timesVisual = [];
+        timesAudio = [];
+        stimuliShown = 0;
+
+    }
+
+    document.onkeydown = onKey;
+    function onKey(e) {
+        if(e==null){
+            e=window.event;
+        }
+        switch (e.which||e.charCode||e.keyCode){
+            case 32:
+                if(!experimentActive){
+                    startExperiment();
+                }else {
+                    if (testActive){
+                        stopTest();
+                    }else {
+                        error++;
+                    }
+                }
+                break;
+        }
+    }
+</script>
+</html>
