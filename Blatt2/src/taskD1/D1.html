@@ -6,7 +6,7 @@
 <body>
 <h1 id="instr" style="color: coral"><b>Press SPACE to start the experiment!</b></h1>
     <div>
-        <img id="img" src="pics/1" alt="pic" style="visibility: hidden;width:400px;height:200px" >
+        <img id="img" src="" alt="pic" style="visibility: hidden;width:400px;height:200px" >
     </div>
     <div>
         <p id="time"></p>
@@ -94,10 +94,11 @@
         }else {
             var x = document.getElementById("img");
             x.style.visibility="hidden";
+            x.src="";
             timesVisual.push(deltaTime);
         }
 
-        if (stimuliShown<8){
+        if (stimuliShown<25){
             startTest();
         }else{
             stopExperiment();
@@ -127,8 +128,8 @@
             standardDerivationAudio += diff * diff; }
         standardDerivationAudio = Math.round(Math.sqrt(standardDerivationAudio /
             timesAudio.length));
-        var medianAudio = (timesAudio[1]+timesAudio[2])/2;
-        var medianVideo = (timesVisual[1]+timesVisual[2])/2;
+        var medianAudio =timesAudio[12];
+        var medianVideo = timesVisual[12];
         document.getElementById("count").innerHTML = "Count: " + timesVisual.length+timesAudio.length;
         document.getElementById("meanV").innerHTML = "VisualMean: " + meanDeltaTimeVisual +
             "ms";

@@ -127,13 +127,13 @@
             times.length));
         var median=0;
         if(times.length!=0){
-            if(times.length%2!=0){
+            if(times.length%2!==0){
 
                 median = times[times.length/2-0.5];
 
             }else {
 
-                median = (times[times.length/2]+times[times.length/2-1])/2;
+                median = (times[times.length/2-1]+times[times.length/2])/2;
             }
         }
         document.getElementById("median").innerHTML="Median: "+median;
@@ -144,6 +144,7 @@
         document.getElementById("err").innerHTML="Error rate:" + err;
         document.getElementById("instr").innerHTML = "Press ENTER to start!";
         times = [];
+        err=0;
 
     }
 
