@@ -19,7 +19,7 @@
         <tr>
             <th>Type</th>
             <th>Arrays</th>
-            <th>Means</th>
+            <th>Mean</th>
         </tr>
         <tr>
             <td>time</td>
@@ -64,7 +64,7 @@
     var oldSize;
     var tArray = new Array;
     var lastTimeClicked;
-    var maxTimes=20;
+    var maxTimes=5;
 
 
     function clickFunk() {
@@ -158,8 +158,8 @@
         switch (random){
             case 1:
                 if(v1<(maxTimes/5)){
-                    circle.style.width= 5+'px';
-                    circle.style.height=5+'px';
+                    circle.style.width= 10+'px';
+                    circle.style.height=10+'px';
                     v1++;
                 }else {
                     randomSize();
@@ -167,8 +167,8 @@
                 break;
             case 2:
                 if(v2<(maxTimes/5)){
-                    circle.style.width= 10+'px';
-                    circle.style.height=10+'px';
+                    circle.style.width= 20+'px';
+                    circle.style.height=20+'px';
                     v2++; }else {
                     randomSize();
                 }
@@ -176,8 +176,8 @@
                 break;
             case 3:
                 if(v3<(maxTimes/5)){
-                    circle.style.width= 20+'px';
-                    circle.style.height=20+'px';
+                    circle.style.width= 40+'px';
+                    circle.style.height=40+'px';
                 v3++;
                 }else {
                     randomSize();
@@ -185,8 +185,8 @@
                 break;
             case 4:
                 if (v4<(maxTimes/5)){
-                    circle.style.width= 30+'px';
-                    circle.style.height=30+'px';
+                    circle.style.width= 60+'px';
+                    circle.style.height=60+'px';
                     v4++;
                 }else {
                     randomSize();
@@ -196,8 +196,8 @@
                 break;
             case 5:
                 if (v5<(maxTimes/5+1)){
-                    circle.style.width= 50+'px';
-                    circle.style.height=50+'px';
+                    circle.style.width= 100+'px';
+                    circle.style.height=100+'px';
                     v5++;
                 }else {
                     randomSize();
@@ -215,7 +215,6 @@
         var i =1;
         while (((lastX-(posX+newSize))<=30&&lastX>=posX)||((posX-(lastX+parseH))<=30&&posX>=lastX)){
             posX= randomNumberX();
-            alert(i);
             i++;
         }
 
@@ -229,7 +228,6 @@
         var i =1;
         while (((lastY-(posY+newSize))<=30&&lastY>=posY)||((posY-(lastY+parseH))<=30&&posY>=lastY)){
             posY= randomNumberY();
-            alert(i);
             i++;
         }
 
