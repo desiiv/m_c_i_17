@@ -5,10 +5,46 @@
     <link rel="stylesheet" type="text/css" href="tC.css">
 </head>
 <body>
-<div style="width: 1024px; height: 768px;border:1px solid black;background-color: darkgray ">
-<!--max:932/676-->
-        <a id="circle" class="circle" style="position:absolute;top: 50px ;left:932px;width: 50px;
-    height: 50px;" ></a>
+<div style="width: 1024px; height: 768px;border:1px solid black;background-color: #302E2E ">
+    <a id="circle" class="circle" style="position:absolute;top: 50px ;left:500px;height: 100px" >
+        <text text-anchor="middle" id="text" style="color: darkviolet" >Start!!!</text></a>
+    <h1 id="text2" style="color: #33ff39;position: absolute;top:300px;left: 500px"></h1>
+
+</div>
+<div>
+    <h1 id="id"></h1>
+</div>
+<div>
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Arrays</th>
+            <th>Means</th>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td id="t1"></td>
+            <td id="t11"></td>
+        </tr>
+        <tr>
+            <td>distance</td>
+            <td id="t2"></td>
+            <td id="t21"></td>
+        </tr>
+        <tr>
+            <td>W</td>
+            <td id="t3"></td>
+            <td id="t31"></td>
+        </tr>
+        <tr>
+            <td>XA</td>
+            <td id="t4"></td>
+        </tr>
+        <tr>
+            <td>XY</td>
+            <td id="t5"></td>
+        </tr>
+    </table>
 </div>
 </body>
 <script type="text/javascript">
@@ -25,16 +61,17 @@
     var dXArray= new Array;
     var dYArray = new Array;
     var wArray = new Array;
-    wArray.push(50);
     var oldSize;
     var tArray = new Array;
     var lastTimeClicked;
+    var maxTimes=20;
 
 
     function clickFunk() {
-        if (count<4){
+        if (count<(maxTimes+1)){
             if (count===0){
                 lastTimeClicked = new Date().getTime();
+                document.getElementById("text").innerHTML="";
             }else {
                 var newTime = new Date().getTime();
                 var deltaTime = newTime - lastTimeClicked;
@@ -42,27 +79,30 @@
                 lastTimeClicked=newTime;
             }
         }
-        if (count<3){
-            var newX= checkerX();
-            var newY = checkerY();
+        if (count<maxTimes){
             oldSize = parseFloat(circle.style.height);
-            setNewCircle(newX,newY,oldSize);
-            lastY = newY;
-            lastX = newX;
+            setNewCircle(oldSize);
             count++;
 
         } else {
-        //TODO:change page!
-            //window.location.href="tCEnd.html";
+
+            wArray.push(parseFloat(circle.style.height));
+            circle.style.visibility="hidden";
+            document.getElementById("text2").innerHTML="END!";
+
             getId();}
     }
 
-    function setNewCircle(newX,newY,oldSize) {
-        circle.style.top = newY+'px';
-        circle.style.left = newX+'px';
+    function setNewCircle(oldSize) {
         randomSize();
         var newSize = parseFloat(circle.style.height);
-        wArray.push(newSize);
+        var newX= checkerX(newSize);
+        var newY = checkerY(newSize);
+        circle.style.top = newY+'px';
+        circle.style.left = newX+'px';
+        if(count>0){
+            wArray.push(oldSize);
+        }
 
         if(newX>lastX){
             dXArray.push((newX+newSize/2)-(lastX+oldSize/2));
@@ -75,10 +115,8 @@
         }else {
             dYArray.push(((lastY+oldSize/2)-(newY+newSize/2)));
         }
-
-
-
-
+        lastY = newY;
+        lastX = newX;
     }
 
     function getDistance() {
@@ -88,7 +126,6 @@
            dis = parseInt(Math.sqrt(Math.pow(dXArray[i],2)+Math.pow(dYArray[i],2)));
            dArray.push(dis);
         }
-        dArray[dArray.length]=862;
 
         return dArray;
     }
@@ -98,6 +135,8 @@
         var meanD=0;
         var meanW=0;
         var meanTM=0;
+        var ID=0;
+
         for (var i = 0;i<dArray.length;i++){
             meanD+=dArray[i];
             meanW+=wArray[i];
@@ -105,22 +144,20 @@
 
         for (var t = 0;t<tArray.length;t++){
             meanTM+=tArray[t];
-            alert(tArray[t]);
         }
-
-        //meanW+=wArray[wArray.length-1];
-        meanTM/=tArray.length;
+        meanTM=Math.round(meanTM/tArray.length);
         meanW=parseInt(meanW/wArray.length);
         meanD= parseInt(meanD/dArray.length);
-        alert("meanD: "+meanD+"  , meanW: "+meanW+"  ,TM:"+meanTM+" ms.");
-
+        ID=Math.log((2*meanD)/meanW)/Math.log(2);
+        ID=ID.toFixed(2);
+        fillTable(ID,dArray,meanTM,meanD,meanW);
     }
 
     function randomSize() {
         var random= Math.floor(Math.random()*(5-1+1)+1);
         switch (random){
             case 1:
-                if(v1<2){
+                if(v1<(maxTimes/5)){
                     circle.style.width= 5+'px';
                     circle.style.height=5+'px';
                     v1++;
@@ -129,7 +166,7 @@
                 }
                 break;
             case 2:
-                if(v2<2){
+                if(v2<(maxTimes/5)){
                     circle.style.width= 10+'px';
                     circle.style.height=10+'px';
                     v2++; }else {
@@ -138,7 +175,7 @@
 
                 break;
             case 3:
-                if(v3<2){
+                if(v3<(maxTimes/5)){
                     circle.style.width= 20+'px';
                     circle.style.height=20+'px';
                 v3++;
@@ -147,7 +184,7 @@
                 }
                 break;
             case 4:
-                if (v4<2){
+                if (v4<(maxTimes/5)){
                     circle.style.width= 30+'px';
                     circle.style.height=30+'px';
                     v4++;
@@ -158,7 +195,7 @@
 
                 break;
             case 5:
-                if (v5<2){
+                if (v5<(maxTimes/5+1)){
                     circle.style.width= 50+'px';
                     circle.style.height=50+'px';
                     v5++;
@@ -172,23 +209,28 @@
 
     }
 
-    function checkerX() {
+    function checkerX(newSize) {
         var posX= randomNumberX();
-        var parseW = parseFloat(circle.style.width);
-        oldSize= parseW;
-            while ((posX<=lastX+30&&posX>lastX)||(posX>=(lastX-parseW-30)&&posX<lastX)){
-                posX= randomNumberX();
-            }
+        var parseH = parseFloat(circle.style.height);
+        var i =1;
+        while (((lastX-(posX+newSize))<=30&&lastX>=posX)||((posX-(lastX+parseH))<=30&&posX>=lastX)){
+            posX= randomNumberX();
+            alert(i);
+            i++;
+        }
 
-            return posX;
-
+        return posX;
     }
 
 
-    function checkerY() {
+    function checkerY(newSize) {
         var posY=randomNumberY();
-        while ((posY<=lastX+30&&posY>lastY)||(posY>=lastY-130&&posY<lastY)){
+        var parseH = parseFloat(circle.style.height);
+        var i =1;
+        while (((lastY-(posY+newSize))<=30&&lastY>=posY)||((posY-(lastY+parseH))<=30&&posY>=lastY)){
             posY= randomNumberY();
+            alert(i);
+            i++;
         }
 
         return posY;
@@ -203,6 +245,17 @@
         return Math.floor(Math.random()*(676-10+1)+10);
     }
 
+    function fillTable(ID,dArray,meanTM,meanD,meanW) {
+        document.getElementById("id").innerHTML="ID: "+ID;
+        document.getElementById("t1").innerHTML= tArray;
+        document.getElementById("t2").innerHTML= dArray;
+        document.getElementById("t3").innerHTML=wArray;
+        document.getElementById("t4").innerHTML= dXArray;
+        document.getElementById("t5").innerHTML= dYArray;
+        document.getElementById("t11").innerHTML= meanTM;
+        document.getElementById("t21").innerHTML= meanD;
+        document.getElementById("t31").innerHTML= meanW;
+    }
 
 </script>
 </html>
